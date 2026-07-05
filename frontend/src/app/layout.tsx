@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fredoka, Geist_Mono, Nunito } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const fredoka = Fredoka({
   variable: "--font-fredoka",
@@ -37,7 +38,10 @@ export default function RootLayout({
       className={`${fredoka.variable} ${nunito.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <Analytics />
+        </AuthProvider>
       </body>
     </html>
   );
