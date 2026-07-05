@@ -32,6 +32,10 @@ const isLoggedIn = async (req: Request & { user?: any }, res: Response, next: Ne
         req.user = user;
         next();
     } catch (error) {
+        if (error instanceof jwt.TokenExpiredError || error instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json(new ApiError(401, "Unauthorized", [], ""));
+        }
+
         return res.status(500).json(new ApiError(500, "Error while authenticating user", [error], ""));
     }
 };
