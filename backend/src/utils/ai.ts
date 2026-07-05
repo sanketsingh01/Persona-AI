@@ -1,5 +1,10 @@
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import dotenv from 'dotenv';
+
+dotenv.config({
+    path: './.env'
+});
 
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY as string,

@@ -2,7 +2,7 @@ import { apiFetch, API_URL } from "./api";
 import type { ApiResponse, User } from "@/types/user";
 
 export async function getMe(): Promise<User | null> {
-  const res = await apiFetch("/api/v1/auth/getme");
+  const res = await apiFetch("/auth/getme");
 
   if (!res.ok) {
     return null;
@@ -13,9 +13,9 @@ export async function getMe(): Promise<User | null> {
 }
 
 export async function logout(): Promise<void> {
-  await apiFetch("/api/v1/auth/logout");
+  await apiFetch("/auth/logout");
 }
 
 export function getGoogleLoginUrl(): string {
-  return `${API_URL}/api/v1/auth/google`;
+  return `${API_URL}/auth/google`;
 }

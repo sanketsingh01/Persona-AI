@@ -1,10 +1,10 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 let refreshPromise: Promise<boolean> | null = null;
 
 export async function refreshTokens(): Promise<boolean> {
   if (!refreshPromise) {
-    refreshPromise = fetch(`${API_URL}/api/v1/auth/refreshToken`, {
+    refreshPromise = fetch(`${API_URL}/auth/refreshToken`, {
       method: "GET",
       credentials: "include",
     })
