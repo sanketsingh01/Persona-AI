@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+interface IChat {
+    userId: mongoose.Types.ObjectId;
+    persona: "hitesh" | "piyush";
+}
+
 const chatSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -13,8 +18,7 @@ const chatSchema = new mongoose.Schema({
     },
     title: {
         type: String,
-        required: true
     }
 }, { timestamps: true });
 
-export const Chat = mongoose.model("Chat", chatSchema);
+export const Chat = mongoose.model<IChat>("Chat", chatSchema);

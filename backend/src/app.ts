@@ -5,7 +5,11 @@ import cookieParser from "cookie-parser";
 
 // router imports 
 import healthCheckRoutes from "./routes/healthCheck.routes.ts";
-import userAuthRoutes from "./routes/auth.routes.ts"
+import userAuthRoutes from "./routes/auth.routes.ts";
+import chatRoutes from "./routes/chat.routes.ts";
+import messageRoutes from "./routes/messages.routes.ts";
+
+dotenv.config();
 
 const app = express();
 
@@ -25,5 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/healthcheck", healthCheckRoutes);
 app.use("/api/v1/auth", userAuthRoutes);
+app.use("/api/v1/chats", chatRoutes);
+app.use("/api/v1/messages", messageRoutes);
 
 export default app;
