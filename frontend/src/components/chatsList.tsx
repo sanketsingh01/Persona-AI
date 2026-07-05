@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { MessageSquarePlus, Trash2 } from "lucide-react";
 
+import { CartoonLoader } from "@/components/cartoon/CartoonDecor";
+import { CartoonShell } from "@/components/cartoon/CartoonShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -14,12 +17,16 @@ interface ChatsListProps {
   onSelectChat: (chat: Chat) => void;
 }
 
-function getPersonaName(persona: Persona) {
-  return persona === "piyush" ? "Piyush" : "Hitesh";
-}
+const PERSONA_META: Record<
+  Persona,
+  { name: string; emoji: string; color: string }
+> = {
+  hitesh: { name: "Hitesh", emoji: "☕", color: "bg-bubble-yellow" },
+  piyush: { name: "Piyush", emoji: "🚀", color: "bg-bubble-lavender" },
+};
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString(undefined, {
+  return new Date(date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -37,7 +44,7 @@ export default function ChatsList({
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const personaName = getPersonaName(persona);
+  const meta = PERSONA_META[persona];
 
   const loadChats = useCallback(async () => {
     setIsLoading(true);
@@ -85,58 +92,85 @@ export default function ChatsList({
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
-          <Button variant="ghost" size="sm" onClick={onBack} className="shrink-0">
+    <CartoonShell showNav={false}>
+      <header className="border-b-[3px] border-ink bg-card/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-4">
+          <button
+            type="button"
+            onClick={onBack}
+            className="cartoon-btn shrink-0 bg-white px-3 py-2 text-sm"
+          >
             ← Back
-          </Button>
+          </button>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-base font-semibold">
-              {personaName} conversations
-            </h1>
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex h-8 w-8 items-center justify-center rounded-lg border-2 border-ink text-sm ${meta.color}`}
+              >
+                {meta.emoji}
+              </span>
+              <h1 className="truncate font-heading text-lg font-bold">
+                {meta.name}'s Chats
+              </h1>
+            </div>
             <p className="truncate text-xs text-muted-foreground">
-              Welcome back, {user?.name}
+              {user?.name}
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => void logout()}>
+          <button
+            type="button"
+            onClick={() => void logout()}
+            className="cartoon-btn shrink-0 bg-white px-3 py-2 text-sm"
+          >
             Logout
-          </Button>
+          </button>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
-        <Button
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+        <button
+          type="button"
           onClick={() => void handleNewConversation()}
           disabled={isCreating}
-          className="mb-6 w-full sm:w-auto"
+          className="cartoon-btn mb-8 flex w-full items-center justify-center gap-2 bg-bubble-mint py-3.5 text-base disabled:opacity-60 sm:w-auto sm:px-8"
         >
-          {isCreating ? "Creating..." : "Start new conversation"}
-        </Button>
+          <MessageSquarePlus className="h-5 w-5" strokeWidth={2.5} />
+          {isCreating ? "Creating..." : "Start new chat ✨"}
+        </button>
 
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-medium">Recent conversations</h2>
-          <Badge variant="secondary">{chats.length}</Badge>
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="font-heading text-lg font-bold">Your conversations</h2>
+          <Badge
+            variant="secondary"
+            className="rounded-full border-2 border-ink bg-bubble-yellow px-3 py-0.5 font-bold text-ink"
+          >
+            {chats.length}
+          </Badge>
         </div>
 
         {error && (
-          <p className="mb-4 text-center text-xs text-destructive">{error}</p>
+          <div className="mb-4 rounded-2xl border-2 border-destructive bg-destructive/10 px-4 py-2 text-center text-sm font-medium text-destructive">
+            {error}
+          </div>
         )}
 
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <p className="text-sm text-muted-foreground">Loading chats...</p>
+          <div className="flex justify-center py-16">
+            <CartoonLoader label="Loading your chats..." />
           </div>
         ) : chats.length === 0 ? (
-          <div className="rounded-2xl border border-dashed py-12 text-center">
-            <p className="text-sm text-muted-foreground">No conversations yet</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Start your first chat with {personaName}
+          <div className="cartoon-card border-dashed py-16 text-center">
+            <p className="text-4xl">💬</p>
+            <p className="mt-4 font-heading text-lg font-bold">
+              No chats yet!
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Start your first conversation with {meta.name}
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {chats.map((chat) => (
+          <div className="space-y-3">
+            {chats.map((chat, index) => (
               <div
                 key={chat._id}
                 role="button"
@@ -148,29 +182,31 @@ export default function ChatsList({
                     onSelectChat(chat);
                   }
                 }}
-                className="group flex w-full cursor-pointer items-center justify-between rounded-xl border bg-card px-4 py-3 text-left transition-colors hover:bg-muted/50"
+                className={`group flex w-full cursor-pointer items-center justify-between rounded-2xl border-[3px] border-ink bg-card px-4 py-3.5 text-left cartoon-shadow-sm transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--ink)] ${index % 2 === 1 ? "sm:ml-4" : ""}`}
               >
                 <div className="min-w-0 flex-1 pr-4">
-                  <p className="truncate text-sm font-medium">
+                  <p className="truncate font-heading font-bold">
                     {chat.title || "New conversation"}
                   </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="mt-0.5 text-xs font-medium text-muted-foreground">
                     {formatDate(chat.updatedAt)}
                   </p>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={(event) => void handleDeleteConversation(chat._id, event)}
-                  className="shrink-0 text-destructive opacity-0 transition-opacity group-hover:opacity-100"
+                  onClick={(event) =>
+                    void handleDeleteConversation(chat._id, event)
+                  }
+                  className="shrink-0 rounded-xl border-2 border-transparent text-destructive opacity-0 transition-all group-hover:border-ink group-hover:bg-destructive/10 group-hover:opacity-100"
                 >
-                  Delete
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             ))}
           </div>
         )}
       </main>
-    </div>
+    </CartoonShell>
   );
 }

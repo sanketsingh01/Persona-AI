@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+import { CartoonLoader } from "@/components/cartoon/CartoonDecor";
+import { CartoonShell } from "@/components/cartoon/CartoonShell";
 import { useAuth } from "@/context/AuthContext";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -17,9 +19,11 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-500">Loading...</p>
-      </div>
+      <CartoonShell>
+        <div className="flex flex-1 items-center justify-center py-32">
+          <CartoonLoader label="Checking your session..." />
+        </div>
+      </CartoonShell>
     );
   }
 

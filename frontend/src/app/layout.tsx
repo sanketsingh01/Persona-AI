@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fredoka, Geist_Mono, Nunito } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -14,8 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PersonaAI",
-  description: "AI persona chat application",
+  title: "PersonaAI — Chat with Cartoon AI Mentors",
+  description:
+    "A playful AI chat app where you learn from vibrant cartoon personas.",
 };
 
 export default function RootLayout({
@@ -26,9 +34,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${fredoka.variable} ${nunito.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col font-sans">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
