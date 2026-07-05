@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 interface IChat {
     userId: mongoose.Types.ObjectId;
     persona: "hitesh" | "piyush";
+    title: string;
 }
 
 const chatSchema = new mongoose.Schema({
