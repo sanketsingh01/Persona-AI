@@ -157,6 +157,19 @@ const tokenRefresh = async (req: Request, res: Response) => {
     }
 };
 
+const getMe = async (req: Request & { user?: any }, res: Response) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json(new ApiError(401, "Unauthorized", [], ""));
+        };
+
+        return res.status(200).json(new ApiResponse(200, { user: req.user }, "Success"));
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Something went wrong while fetching user";
+        return res.status(500).json(new ApiError(500, message, [error], ""));
+    }
+}
+
 const logout = async (req: Request, res: Response) => {
     try {
         res.clearCookie("accessToken");
@@ -168,4 +181,4 @@ const logout = async (req: Request, res: Response) => {
     }
 }
 
-export { getGoogleRedirectUri, googleLogin, tokenRefresh, logout };
+export { getGoogleRedirectUri, googleLogin, tokenRefresh, logout, getMe };
