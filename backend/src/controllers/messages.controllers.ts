@@ -6,6 +6,7 @@ import { Message } from "../models/messages.models.ts";
 import { hitesh, piyush } from "../utils/ai.ts";
 import { ApiError } from "../utils/api-error.ts";
 import { ApiResponse } from "../utils/api-response.ts";
+import { assertDailyMessageLimit } from "../utils/rate-limit.ts";
 
 const getAllMessages = async (req: Request & { user?: any }, res: Response) => {
     try {
@@ -55,6 +56,15 @@ const createMessage = async (req: Request & { user?: any }, res: Response) => {
 
         if (chat.userId.toString() !== req.user._id.toString()) {
             return res.status(403).json(new ApiError(403, "Forbidden", [], ""));
+        }
+
+        try {
+            await assertDailyMessageLimit(req.user._id);
+        } catch (error) {
+            if (error instanceof ApiError) {
+                return res.status(error.statusCode).json(error);
+            }
+            throw error;
         }
 
         const messages = await Message.find({ chatId })
