@@ -78,10 +78,10 @@ export default function ChatInterface({ chat, onBack }: ChatInterfaceProps) {
 
     const result = await createMessage(chat._id, content);
 
-    if (!result) {
+    if (!result.ok) {
       setMessages((prev) => prev.slice(0, -1));
       setInputMessage(content);
-      setError("Failed to send message. Please try again.");
+      setError(result.error);
       setIsSending(false);
       return;
     }

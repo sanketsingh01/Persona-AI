@@ -19,22 +19,29 @@ export async function getAllMessages(chatId: string): Promise<Message[]> {
 export async function createMessage(
     chatId: string,
     content: string,
-): Promise<{ userMessage: Message; assistantMessage: Message } | null> {
+): Promise<
+    | { ok: true; userMessage: Message; assistantMessage: Message }
+    | { ok: false; error: string }
+> {
     const res = await apiFetch(`/messages/${chatId}`, {
         method: "POST",
         body: JSON.stringify({ content }),
     });
 
-    if (!res.ok) {
-        return null;
-    }
-
     const body = (await res.json()) as ApiResponse<{
         userMessage: Message;
         assistantMessage: Message;
-    }>;
+    }> & { message?: string };
+
+    if (!res.ok) {
+        return {
+            ok: false,
+            error: body.message ?? "Failed to send message. Please try again.",
+        };
+    }
 
     return {
+        ok: true,
         userMessage: body.data.userMessage,
         assistantMessage: body.data.assistantMessage,
     };
